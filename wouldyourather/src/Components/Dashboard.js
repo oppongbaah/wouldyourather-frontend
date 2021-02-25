@@ -1,6 +1,7 @@
 import {useEffect} from 'react';
 import {connect} from 'react-redux';
 import Navigation from './NavBar';
+import Login from './Login';
 
 import {
   fetchUsers
@@ -26,7 +27,7 @@ function Dashboard(props) {
       {
         parseInt(props.userStatus.status) === 401 &&
           <>
-            <h2 className="center"> Login </h2>
+            <Login />
           </>
       }
       

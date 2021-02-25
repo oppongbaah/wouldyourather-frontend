@@ -3,11 +3,11 @@
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  font-family: Ubuntu;
-  color: #252525;
-  background-color: silver;
+  background-image: url('../assets/background.jpg');
+  background-size:  cover;
+  background-repeat: no-repeat;
+  height: 100%;
+  font-family: "Ubuntu";
 }
 
 a {
