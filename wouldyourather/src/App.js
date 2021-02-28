@@ -7,6 +7,9 @@ import './styles/App.css';
 const Dashboard = lazy(() => import('./Components/Dashboard'));
 const PollDetails = lazy(() => import('./Components/PollDetails'));
 const NewPoll = lazy(() => import('./Components/NewPoll'));
+const Login = lazy(() => import('./Components/Login'));
+const Logout = lazy(() => import('./Components/Logout'));
+const Signup = lazy(() => import('./Components/Signup'));
 
 class App extends Component {
 
@@ -19,6 +22,10 @@ class App extends Component {
               <Route exact path="/" component={Dashboard} />
               <Route path="/poll  " component={PollDetails}/>
               <Route path="/new-poll" component={NewPoll}/>
+              <Route path="/new-poll" component={NewPoll}/>
+              <Route path="/users/login" component={Login}/>
+              <Route path="/users/logout" component={Logout}/>
+              <Route path="/users/signup" component={Signup}/>
             </Switch>
           </Suspense>
         </Router>

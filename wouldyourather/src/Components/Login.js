@@ -1,43 +1,110 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 import '../styles/login.css';
+import {encode} from 'base-64';
+import Cookies from 'universal-cookie';
+import {connect} from 'react-redux';
+import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
+import Navigation from './NavBar';
+import {login} from '../redux/middlewares/mwUsers';
 
-const Login = () => {
-    // authorisation
+// instantiate cookie
+const cookies = new Cookies();
 
-    // set cookies
+const Login = (props) => {
+    const [username, setUsername] = useState("Guest");
+    const [password, setPassword] = useState("");
+    const [remembered, setLoginCache] = useState(false);
 
+    /* eslint-disable */
+    useEffect(() => {
+        props.dispatch_fetchUsers();
+    }, [])
+
+    useEffect(() => {
+        if(!cookies.get("authedUser")){
+            props.dispatch_authedUser(username);
+        }
+        else {
+            props.dispatch_authedUser(cookies.get("authedUser"));
+        }
+    }, [])
+    /* eslint-enable */
+
+    // an event to handle username textbox changes
+    const handleUsername = (e) => {
+        setUsername(e.target.value);
+    }
+
+    // an event to handle password textbox changes
+    const handlePassword = (e) => {
+        setPassword(e.target.value);
+    }
+
+    // an event to handle whether the username and password should be cached or not
+    const handleLoginCache = (e) => {
+        setLoginCache(e.target.checked);
+
+        if(remembered) {
+            console.log("remember")
+        }
+    }
+
+    // this finally handles the event that submits data to the server for approval
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // authorisation
+        const cred = encode(username + ":" + password);
+        const loginInfo = login(cred);
+        // set cookies
+        loginInfo
+        .then(res => {
+            if (parseInt(res.status) === 200) {
+                if(!cookies.get("authedUser")) {
+                    let time = new Date();
+                    // cookies expires in hour time
+                    time.setTime(time.getTime() + (60*60*1000));
+                    cookies.set('authedUser', res.name, { path: '/', expires: time});
+                }
+                // add the authed user to the store state
+                props.dispatch_authedUser(res.name);
+                // Tell the user that login is successful
+                alert(res.message);
+                // push the route to the location hook to redirect
+                props.history.push('/');
+            }
+            else if (parseInt(res.status) === 401) {
+                alert(res.message);
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
 
     // return a decription and a login form
     return (
         <>
+        <Navigation />
         <div className="container">
         <div className="d-flex justify-content-center h-100">
             <div className="card">
                 <div className="card-header">
-                    <h3>Sign In</h3>
+                    <h3>{props.location.state.desc}</h3>
                 </div>
                 <div className="card-body">
-                    <form action="/" method="GET">
+                    <form onSubmit={handleSubmit.bind(this)} >
                         <div className="input-group form-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    
-                                    <i className="fas fa-user"></i>
-                                </span>
-                            </div>
-                            <input type="text" className="form-control" placeholder="username" />
+                            <input onChange={handleUsername.bind(this)} type="text" 
+                            className="form-control" placeholder="username" />
                         </div>
                         <div className="input-group form-group">
-                            <div className="input-group-prepend">
-                                <span className="input-group-text">
-                                    <i className="fas fa-key"></i>
-                                </span>
-                            </div>
-                            <input type="password" className="form-control" placeholder="password" />
+                            <input onChange={handlePassword.bind(this)} type="password" className="form-control" 
+                            placeholder="password" />
                         </div>
                         <div className="row align-items-center remember">
-                            <input type="checkbox" />Remember Me
+                            <input onChange={handleLoginCache} type="checkbox" />Remember Me
                         </div>
                         <div className="form-group">
                             <input type="submit" value="Login" className="btn float-right login_btn" />
@@ -46,7 +113,13 @@ const Login = () => {
                 </div>
                 <div className="card-footer">
                     <div className="d-flex justify-content-center links">
-                        Don't have an account?<Link to="/users/signup">Sign Up</Link>
+                        Don't have an account?
+                        <Link 
+                        to={{
+                            pathname:'/users/signup',
+                            state: {desc:'sign up'}
+                        }}>
+                        Sign Up</Link>
                     </div>
                 </div>
             </div>
@@ -56,4 +129,19 @@ const Login = () => {
     )
 }
 
-export default Login;
+
+const mapStateToProps = state => {
+    return {
+        users: state.users,
+        authedUser: state.authedUser
+    }
+}
+  
+const mapDispatchToProps = dispatch => {
+return {
+    dispatch_fetchUsers: () => dispatch(fetchUsers()), 
+    dispatch_authedUser: (user) => dispatch(authedUser(user))
+}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

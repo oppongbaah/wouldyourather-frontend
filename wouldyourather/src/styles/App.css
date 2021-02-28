@@ -2,17 +2,29 @@
   font-size: 16px;
 }
 
-body {
-  background-image: url('../assets/background.jpg');
+body, html {
+  background-image: url('../utils/background.jpg');
   background-size:  cover;
   background-repeat: no-repeat;
   height: 100%;
   font-family: "Ubuntu";
 }
 
+.navbar-nav {
+  width: 100%;
+}
+
+.collapse {
+  position: relative;
+}
+
 a {
   text-decoration: none;
-  color: #252525;
+  color: tomato;
+}
+
+a:hover {
+  color: green;
 }
 
 .container {
@@ -27,7 +39,7 @@ a {
   padding: 10px;
   border: 1px solid rgba(0,0,0,.29);
   cursor: pointer;
-  background: #fff;
+  background: yellow;
   font-size: 16px;
   width: 250px;
   position: relative;
@@ -46,10 +58,13 @@ a {
 
 .center {
   text-align: center;
+  color: tomato;
 }
 
 .active {
-  font-weight: bold;
+  color: tomato;
+  font-weight: bolder;
+  border-bottom: 3px solid green;
 }
 
 .nav ul {
@@ -215,4 +230,75 @@ li {
   margin-top: 10px;
   font-size: 20px;
   color: #C3392A;
+}
+
+.topnav a:hover {
+  text-decoration: none;
+  border-bottom: 3px solid tomato;
+}
+
+.text-white {
+  margin: 0px !important;
+  color: green;
+  padding: 5px !important;
+  width: 100px !important;
+}
+
+.signin, .signout {
+  float: right !important;
+}
+
+.navbar {
+  background-color: yellow !important;
+}
+
+.login-again {
+  margin-left: 40%;
+  color: white;
+}
+
+.image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding: 0px;
+  float: right !important;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+}
+
+.dropd {
+  float: right !important;
+  margin-top: 5px;
+}
+
+.sign-up-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  padding: 0px;
+  margin-left: 43%;
+  margin-bottom: 20px;
+}
+
+.sign-up-image img {
+  width: 100%;
+  height: 100%;
+}
+
+.upload {
+  color: yellow;
+}
+
+.update {
+  margin-bottom: 20px;
+  color: tomato;
+  display: flex;
+}
+
+.input-group input {
+  height: 40px;
 }

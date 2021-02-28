@@ -3,22 +3,22 @@ import * as actions from '../actions';
 function userReducer(state=[], action){
     switch(action.type){
         case actions.ADD_USER:
-            return [...state, action.payload]
+            return action.users
         default:
             return state;
     }
-}   
+} 
 
-function userStatusReducer(state="", action) {
-    if(action.type === actions.STATUS){
-        return action.payload
+function authedUserReducer(state="", action){
+    if (action.type === actions.AUTHED_USER) {
+        return action.authedUser;
     }
     else {
-        return state
+        return state;
     }
 }
 
 export {
     userReducer,
-    userStatusReducer
+    authedUserReducer
 }

@@ -1,33 +1,47 @@
 import {useEffect} from 'react';
 import {connect} from 'react-redux';
 import Navigation from './NavBar';
-import Login from './Login';
-
-import {
-  fetchUsers
-} from '../redux/middlewares/mwUsers';
+import {Redirect} from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
+// instantiate cookie
+const cookies = new Cookies();
 
 function Dashboard(props) {
 
-  const users = props.users;
-
+  /* eslint-disable */
   useEffect(() => {
     props.dispatch_fetchUsers();
+  
+    if (cookies.get("authedUser")) {
+      props.dispatch_authedUser(cookies.get("authedUser"));
+    }
+    else {
+      props.dispatch_authedUser("guest");
+    }
   }, [])
- 
+  /* eslint-enable */
+
+  const isCookied = () => {
+    return cookies.get('authedUser');
+  }
+
   return(
     <>
       {
-        parseInt(props.userStatus.status) === 200 &&
+        isCookied() &&
           <>
             <Navigation />
-            <h2 className="center"> Your Dashboard </h2>
+            <h2 className="center"> Dashboard </h2>
           </>
       }
       {
-        parseInt(props.userStatus.status) === 401 &&
+        !isCookied() &&
           <>
-            <Login />
+            <Redirect to={{
+              pathname: 'users/login',
+              state: {desc: "sign in required", redirected: true}
+            }}/>
           </>
       }
       
@@ -39,13 +53,14 @@ function Dashboard(props) {
 const mapStateToProps = state => {
   return {
     users: state.users,
-    userStatus: state.userStatus
+    authedUser: state.autherUser
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    dispatch_fetchUsers: () => dispatch(fetchUsers())
+    dispatch_fetchUsers: () => dispatch(fetchUsers()),
+    dispatch_authedUser: (user) => dispatch(authedUser(user))
   }
 }
 
