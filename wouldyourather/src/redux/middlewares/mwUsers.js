@@ -20,9 +20,22 @@ export function fetchUsers() {
 }
 
 export function authedUser(user) {
-    return (dispatch => {
-        dispatch(actionCreators.getAuthedUser(user))
-    })
+    if (user === "Guest") {
+        return (dispatch => {
+            dispatch(actionCreators.getAuthedUser(user, ''))
+        })
+    }
+    else {
+        return (dispatch => {
+            axios.get(`${api}/users/fetch/${user.trim()}`)
+            .then(authedUser => {
+                dispatch(actionCreators.getAuthedUser(user, authedUser.data.imageURL))
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        })
+    }
 }
 
 export async function login(credentials) {

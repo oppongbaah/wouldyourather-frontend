@@ -1,15 +1,10 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import { withRouter } from "react-router-dom";
-import {connect} from 'react-redux';
-import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
 import Navigation from './NavBar';
 import '../styles/login.css';
 import '../styles/App.css';
 import {signup} from '../redux/middlewares/mwUsers';
-import Cookies from 'universal-cookie';
-
-const cookies = new Cookies();
 
 const Signup = (props) => {
 
@@ -18,18 +13,6 @@ const Signup = (props) => {
     const [password, setPassword] = useState("");
     const [comfirmPassword, setComfirmPassword] = useState("");
     const [file, setFileName] = useState("");
-
-    /* eslint-disable */
-    useEffect(() => {
-        props.dispatch_fetchUsers();
-    }, [])
-
-    useEffect(() => {
-        if(cookies.get("authedUser")) {
-            props.dispatch_authedUser(cookies.get("authedUser"));
-        }
-    }, [])
-    /* eslint-enable */
 
     const handleFirstname = (e) => {
         setFirstname(e.target.value);
@@ -156,18 +139,4 @@ const Signup = (props) => {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        users: state.users,
-        authedUser: state.authedUser
-    }
-}
-  
-const mapDispatchToProps = dispatch => {
-    return {
-        dispatch_fetchUsers: () => dispatch(fetchUsers()), 
-        dispatch_authedUser: (user) => dispatch(authedUser(user))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Signup));
+export default withRouter(Signup);

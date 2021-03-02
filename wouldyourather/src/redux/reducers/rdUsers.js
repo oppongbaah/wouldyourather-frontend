@@ -1,24 +1,23 @@
 import * as actions from '../actions';
 
-function userReducer(state=[], action){
+const initialState = {
+    data : [],
+    authedUser: "",
+    avatarURL: ""
+}
+
+function userReducer(state=initialState, action){
     switch(action.type){
         case actions.ADD_USER:
-            return action.users
+            return {...state, data: action.users};
+        case actions.AUTHED_USER:
+            return {...state, 
+                authedUser: action.payload.authedUser,
+                avatarURL: action.payload.userAvatar
+            };
         default:
             return state;
     }
 } 
 
-function authedUserReducer(state="", action){
-    if (action.type === actions.AUTHED_USER) {
-        return action.authedUser;
-    }
-    else {
-        return state;
-    }
-}
-
-export {
-    userReducer,
-    authedUserReducer
-}
+export default userReducer;

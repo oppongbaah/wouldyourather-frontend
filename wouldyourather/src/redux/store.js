@@ -1,12 +1,13 @@
 import {createStore, combineReducers, applyMiddleware, compose} from 'redux';
-import {userReducer, authedUserReducer} from './reducers/rdUsers';
+import userReducer from './reducers/rdUsers';
+import {pollReducer} from './reducers/rdPolls';
 import ReduxThunk from 'redux-thunk';
 // import logger from 'redux-logger';
 
 const rootReducer = combineReducers({
     users: userReducer,
-    authedUser: authedUserReducer
-  });
+    polls: pollReducer
+});
 
 const composeEnhancers =
 typeof window === 'object' &&

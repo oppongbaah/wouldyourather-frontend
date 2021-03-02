@@ -7,9 +7,12 @@ export function loadUser(users) {
     }
 }
 
-export function getAuthedUser(user) {
+export function getAuthedUser(user, avatar) {
     return {
         type: actions.AUTHED_USER,
-        authedUser: user
+        payload: {
+            authedUser: user,
+            userAvatar: avatar
+        }
     }
 }

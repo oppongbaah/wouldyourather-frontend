@@ -19,15 +19,9 @@ function Navigation(props){
     
   }
 
-  const getImageURL = (userId) => {
-    return props.users
-    .filter(user => user._id === userId && user.imageURL)
-    .map(user => user.imageURL)
-  }
+  const image = props.avatarURL;
 
-  const image = getImageURL(props.authedUser);
-
-  const imageURL = image.length ? `usersAvatar/${image}` 
+  const imageURL = image ? `usersAvatar/${image}` 
   : 'usersAvatar/avatar.png';
  
   return (
@@ -114,8 +108,9 @@ function Navigation(props){
 
 const mapStateToProps = state => {
   return {
-    authedUser: state.authedUser,
-    users: state.users
+    authedUser: state.users.authedUser,
+    avatarURL: state.users.avatarURL,
+    users: state.users.data
   }
 }
 

@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Navigation from './NavBar';
 import {connect} from 'react-redux';
-import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
+import {authedUser} from '../redux/middlewares/mwUsers';
 import Cookies from 'universal-cookie';
 
 const cookies = new Cookies();
@@ -9,10 +9,6 @@ const cookies = new Cookies();
 const NewTweet = (props) => {
   
   /* eslint-disable */
-  useEffect(() => {
-    props.dispatch_fetchUsers();
-  }, [])
-
   useEffect(() => {
     if(cookies.get("authedUser")) {
       props.dispatch_authedUser(cookies.get("authedUser"));
@@ -28,18 +24,10 @@ const NewTweet = (props) => {
   )
 }
 
-const mapStateToProps = state => {
-  return {
-      users: state.users,
-      authedUser: state.autherUser
-  }
-}
-
 const mapDispatchToProps = dispatch => {
   return {
-    dispatch_fetchUsers: () => dispatch(fetchUsers()),
     dispatch_authedUser: (user) => dispatch(authedUser(user))
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewTweet);
+export default connect(null, mapDispatchToProps)(NewTweet);

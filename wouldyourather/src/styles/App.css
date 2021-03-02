@@ -3,10 +3,8 @@
 }
 
 body, html {
-  background-image: url('../utils/background.jpg');
-  background-size:  cover;
+  background-color: rgb(47, 69, 108);
   background-repeat: no-repeat;
-  height: 100%;
   font-family: "Ubuntu";
 }
 
@@ -103,7 +101,7 @@ li {
   width: auto;
 }
 
-.tweet {
+.poll {
   width: 100%;
   max-width: 590px;
   padding: 10px;
@@ -115,7 +113,7 @@ li {
   background-color: white;
 }
 
-.tweet-info {
+.poll-info {
   margin: 10px;
   display: flex;
   flex-direction: column;
@@ -123,11 +121,11 @@ li {
 }
 
 /* Hacky but less typing in the video */
-.tweet-info > div > span {
+.poll-info > div > span {
   font-weight: bold;
   font-size: 1.2rem;
 }
-.tweet-info > div > p {
+.poll-info > div > p {
   font-size: 1rem;
   margin: 10px 0;
 }
@@ -135,28 +133,28 @@ li {
   margin-top: 5px;
   color: #969696;
 }
-.tweet-icons {
+.poll-icons {
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.tweet-icons > div {
+.poll-icons > div {
   margin: 0 auto;
   text-align: center;
 }
-.tweet-icons > div > p {
+.poll-icons > div > p {
   font-size: 0.8rem;
 }
-.tweet-icons > span {
+.poll-icons > span {
   color: #969696;
   margin: 0 15px 0 5px;
   font-size: 18px !important;
 }
-.tweet-icon {
+.poll-icon {
   font-size: 16px;
   color: #697784;
 }
-.tweet-icon:hover {
+.poll-icon:hover {
   color: #00b5d6;
   cursor: pointer;
 }
@@ -178,7 +176,7 @@ li {
   font-size: 16px;
   color: #697784;
 }
-.tweet-image {
+.poll-image {
   width: 400px;
   height: auto;
   margin: 0 auto;
@@ -209,7 +207,7 @@ li {
   margin-right: 75%;
 }
 
-.new-tweet {
+.new-poll {
   width: 100%;
   max-width: 590px;
   margin: 0 auto;
@@ -225,7 +223,7 @@ li {
   height: 100px;
 }
 
-.tweet-length {
+.poll-length {
   text-align: right;
   margin-top: 10px;
   font-size: 20px;

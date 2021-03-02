@@ -5,7 +5,7 @@ import '../styles/login.css';
 import {encode} from 'base-64';
 import Cookies from 'universal-cookie';
 import {connect} from 'react-redux';
-import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
+import {authedUser} from '../redux/middlewares/mwUsers';
 import Navigation from './NavBar';
 import {login} from '../redux/middlewares/mwUsers';
 
@@ -18,10 +18,6 @@ const Login = (props) => {
     const [remembered, setLoginCache] = useState(false);
 
     /* eslint-disable */
-    useEffect(() => {
-        props.dispatch_fetchUsers();
-    }, [])
-
     useEffect(() => {
         if(!cookies.get("authedUser")){
             props.dispatch_authedUser(username);
@@ -128,20 +124,11 @@ const Login = (props) => {
         </>
     )
 }
-
-
-const mapStateToProps = state => {
-    return {
-        users: state.users,
-        authedUser: state.authedUser
-    }
-}
   
 const mapDispatchToProps = dispatch => {
-return {
-    dispatch_fetchUsers: () => dispatch(fetchUsers()), 
-    dispatch_authedUser: (user) => dispatch(authedUser(user))
-}
+    return {
+        dispatch_authedUser: (user) => dispatch(authedUser(user))
+    }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));
+export default connect(null, mapDispatchToProps)(withRouter(Login));

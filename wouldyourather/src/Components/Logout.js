@@ -3,15 +3,14 @@ import Navigation from './NavBar';
 import '../styles/login.css';
 import {NavLink} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
+import {authedUser} from '../redux/middlewares/mwUsers';
 
 function Logout(props) {
 
     /* eslint-disable */
     useEffect(() => {
-        props.dispatch_fetchUsers();
         props.dispatch_authedUser("Guest");
-    }, [])
+    })
     /* eslint-enable */
 
     return(
@@ -29,19 +28,11 @@ function Logout(props) {
     )
 }
 
-const mapStateToProps = state => {
-    return {
-        users: state.users,
-        authedUser: state.autherUser
-    }
-}
-
 const mapDispatchToProps = dispatch => {
-    return {
-        dispatch_fetchUsers: () => dispatch(fetchUsers()),  
+    return {  
         dispatch_authedUser: (user) => dispatch(authedUser(user))
     }
 }
   
-export default connect(mapStateToProps, mapDispatchToProps)(Logout);
+export default connect(null, mapDispatchToProps)(Logout);
 
