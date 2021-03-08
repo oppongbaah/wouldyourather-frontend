@@ -62,3 +62,23 @@ export function getBtnStatus(status) {
         catch (err) {console.log(err)}
     })
 }
+
+export function addQuestion(question) {
+    return(dispatch => {
+        try {
+            dispatch(actionCreators.addQuestion({}, 'adding', ''));
+
+            axios.post(`${api}/polls/add`, question)
+            .then((res) => {
+                dispatch(actionCreators.addQuestion(res.data.question,
+                    'added', res.data.message));
+            })
+            .catch((err) => {
+                console.log(err)
+                dispatch(actionCreators.addQuestion({}, 'failed', 
+                    'Error Adding Question'));
+            })
+        }
+        catch (e) {console.log(e)}
+    })
+}

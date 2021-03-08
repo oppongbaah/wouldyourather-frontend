@@ -170,7 +170,7 @@ const Results = (props) => {
                         <DotLoader color={"tomato"} loading={true} css={override} size={60} />
                     }
                     {
-                      props.voteStatus !== "voted" &&
+                      props.voteStatus === "" &&
                         view(originalQuestion)
                     }
                   </div>

@@ -11,9 +11,11 @@ const cookies = new Cookies();
 
 const QuestionDetails = (props) => {
 
+  /* eslint-disable */
   useEffect(() => {
     props.dispatch_fetchPoll();
   }, [props.voteStatus])
+  /* eslint-enable */
 
   const [btnAClass, setBtnAClass] = useState("");
   const [btnBClass, setBtnBClass] = useState("");
@@ -44,7 +46,7 @@ const QuestionDetails = (props) => {
       setBtnAClass("selected");
       setBtnFlag(true);
       setTagA(<MdDone/>)
-      console.log(props.votedQuestion)
+
       props.history.push(`/questions/${question._id}/answered`, {
         question,
         users
@@ -65,6 +67,7 @@ const QuestionDetails = (props) => {
         setBtnBClass("selected");
         setBtnFlag(true);
         setTagB(<MdDone/>);
+        
         props.history.push(`/questions/${question._id}/answered`, {
           question,
           users

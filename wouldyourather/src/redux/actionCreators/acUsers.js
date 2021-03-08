@@ -2,7 +2,7 @@ import * as actions from '../actions';
 
 export function loadUser(users, status) {
     return {
-        type: actions.ADD_USER,
+        type: actions.GET_USER,
         payload: {
             users,
             status

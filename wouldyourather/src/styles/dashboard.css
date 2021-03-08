@@ -97,3 +97,19 @@
 .norm {
     color: red !important;
 }
+
+.add {
+    left: 35%;
+}
+
+.adding-message {
+    margin-left: 40%;
+    color: tomato;
+    font-size: 12px;
+}
+
+.error-message {
+    margin-left: 40%;
+    color: red;
+    font-size: 12px;
+}

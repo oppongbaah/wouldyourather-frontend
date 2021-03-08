@@ -3,12 +3,13 @@ import * as actions from '../actions';
 const initialState = {
     payload : {data:[], status:''},
     vote: {data:[], status:'', option: ''},
-    btnStatus: "recommended"
+    btnStatus: "recommended",
+    addedQuestion: {data:{}, status:'', message:''}
 }
 
 function pollReducer(state = initialState, action){
     switch(action.type){
-        case actions.ADD_POLL:
+        case actions.GET_POLL:
             return {...state, payload:
                 {
                     data: action.payload.polls,
@@ -25,6 +26,14 @@ function pollReducer(state = initialState, action){
             }
         case actions.BTN_STATUS:
             return {...state, btnStatus: action.status}
+        case actions.ADD_POLL:
+            return {...state, addedQuestion:
+                {
+                    data: action.payload.question,
+                    status: action.payload.status,
+                    message: action.payload.message
+                }
+            }
         default:
             return state;
     }

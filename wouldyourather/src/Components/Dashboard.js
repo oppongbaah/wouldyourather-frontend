@@ -119,8 +119,18 @@ function Dashboard(props) {
           </>
         )
       }
-      else if (props.btnStatus === "answered" && requiredPolls.length) {
-        return <PollList requiredPolls={requiredPolls} status={props.btnStatus} />
+      else if (props.btnStatus === "answered") {
+        if(requiredPolls.length) {
+          return <PollList requiredPolls={requiredPolls} status={props.btnStatus} />
+        }
+        else {
+          return (
+            <>
+              <br></br><br></br>
+              <p> You have not answered any question yet. Thank you! </p>
+            </>
+          )
+        }
       }
       else if (props.btnStatus === "unanswered" && requiredPolls.length) {
         return <PollList requiredPolls={requiredPolls} status={props.btnStatus} /> 
