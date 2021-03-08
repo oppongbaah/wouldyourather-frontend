@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import Navigation from './NavBar';
+import React from 'react';
+import {Redirect, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {authedUser} from '../redux/middlewares/mwUsers';
 import Cookies from 'universal-cookie';
@@ -8,18 +8,33 @@ const cookies = new Cookies();
 
 const NewTweet = (props) => {
   
-  /* eslint-disable */
-  useEffect(() => {
-    if(cookies.get("authedUser")) {
-      props.dispatch_authedUser(cookies.get("authedUser"));
-    }
-  }, [])
-  /* eslint-enable */
+
 
   return(
     <>
-      <Navigation />
-      <h2 className="center"> New Poll </h2>
+      {
+        cookies.get("authedUser") &&
+        <>
+          <h1 className="center"> Would You Rather? </h1>
+          <form>
+            <div className="form-group">
+              <label >Option One</label>
+              <textarea className="form-control" rows="3"></textarea>
+            </div>
+            <div className="form-group">
+              <label >Option Two</label>
+              <textarea className="form-control" rows="3"></textarea>
+            </div>
+          </form>
+        </>
+      }
+      {
+        !cookies.get("authedUser") &&
+        <Redirect to={{
+          pathname: '/users/login',
+          state: {desc: "sign in required", redirected: true}
+        }} />
+      }
     </>
   )
 }
@@ -30,4 +45,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(NewTweet);
+export default connect(null, mapDispatchToProps)(withRouter(NewTweet));

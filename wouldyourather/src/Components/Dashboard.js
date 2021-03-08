@@ -1,77 +1,215 @@
-import React, {useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {connect} from 'react-redux';
-import Navigation from './NavBar';
-import {Redirect} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import {fetchUsers, authedUser} from '../redux/middlewares/mwUsers';
-import {fetchPoll} from '../redux/middlewares/mwPolls';
 import PollList from './PoollList';
+import '../styles/dashboard.css';
+import { css } from "@emotion/react";
+import {DotLoader} from "react-spinners";
+import { getBtnStatus, fetchPoll} from '../redux/middlewares/mwPolls';
 
-// instantiate cookie
 const cookies = new Cookies();
 
 function Dashboard(props) {
 
-  /* eslint-disable */
-  useEffect(() => {
-    props.dispatch_fetchUsers();
-    props.dispatch_fetchPoll();
-  }, [])
+    /* eslint-disable */
+    useEffect(() => {
+      props.dispatch_fetchPoll();
+      props.dispatch_getBtnStatus("recommended");
+      handleRecBtnDispatch();
+    }, [])
 
-  useEffect(() => {
-  
-    if (cookies.get("authedUser")) {
-      props.dispatch_authedUser(cookies.get("authedUser"));
-    }
-    else {
-      props.dispatch_authedUser("guest");
-    }
-  }, [])
-  /* eslint-enable */
-
-  const isCookied = () => {
-    return cookies.get('authedUser');
-  }
-
-  return(
-    <>
-      {
-        isCookied() &&
-          <>
-            <Navigation />
-            <h2 className="center"> Dashboard </h2>
-            <PollList />
-          </>
+    useEffect(() => {
+      if(props.btnStatus === "answered"){
+        handleAnsBtnDispatch();
       }
-      {
-        !isCookied() &&
-          <>
-            <Redirect to={{
-              pathname: 'users/login',
-              state: {desc: "sign in required", redirected: true}
-            }}/>
-          </>
+      else if(props.btnStatus === "unanswered") {
+        handleUnansBtnDispatch();
       }
-      
-    </>
-  )
+      else if(props.btnStatus === "recommended") {
+        handleRecBtnDispatch();
+      } 
+    }, [props.btnStatus])
+    /* eslint-enable */
+
+    const override = css`
+      display: block;
+      margin: 20% auto;
+      border-color: tomato;
+      `;
+
+    const [requiredPolls, setPolls] = useState(props.polls);
+    const [allBtnClass, setAllbtnClass] = useState('inactive');
+    const [ansBtnClass, setAnsbtnClass] = useState('inactive');
+    const [unansBtnClass, setUnansbtnClass] = useState('inactive');
+
+    const toggleAllClass = () => {
+      allBtnClass === 'active' ?
+      setAllbtnClass('inactive') :
+      setAllbtnClass('active');
+    }
+
+    const toggleAnsClass = () => {
+      ansBtnClass === 'active' ?
+      setAnsbtnClass('inactive') :
+      setAnsbtnClass('active');
+    }
+
+    const toggleUnansClass = () => {
+      unansBtnClass === 'active' ?
+      setUnansbtnClass('inactive') :
+      setUnansbtnClass('active')
+    }
+
+    const handleAnsBtnDispatch = () => {
+      const answeredPolls = props.polls
+      .filter(question => question.optionOne.votes.includes(props.authedUser) 
+      || question.optionTwo.votes.includes(props.authedUser));
+
+      toggleAnsClass();
+      setAllbtnClass('inactive');
+      setUnansbtnClass('inactive');
+      setPolls(answeredPolls);
+    }
+
+    const handleAnsBtnClicked = () => {
+      props.dispatch_getBtnStatus("answered");
+    }
+
+    const handleUnansBtnDispatch = () => {
+      const unansweredPolls = props.polls
+      .filter(question => !(question.optionOne.votes.includes(props.authedUser)) 
+      && !(question.optionTwo.votes.includes(props.authedUser)));
+    
+      toggleUnansClass();
+      setAllbtnClass('inactive');
+      setAnsbtnClass('inactive');
+      setPolls(unansweredPolls);
+    }
+
+    const handleUnansBtnClick = () => {
+      props.dispatch_getBtnStatus("unanswered");
+    }
+    
+    const handleRecBtnDispatch = () => {
+      const unansweredPolls = props.polls
+      .filter(question => !(question.optionOne.votes.includes(props.authedUser)) 
+      && !(question.optionTwo.votes.includes(props.authedUser)));
+
+      toggleAllClass();
+      setAnsbtnClass('inactive');
+      setUnansbtnClass('inactive');
+      setPolls(unansweredPolls);
+    }
+    
+    const handleRecBtnClick = () => {
+      props.dispatch_getBtnStatus("recommended");
+    }
+
+    const checkAvailability = () => {
+      const unansweredPolls = props.polls
+      .filter(question => !(question.optionOne.votes.includes(cookies.get("authedUser"))) 
+      && !(question.optionTwo.votes.includes(cookies.get("authedUser"))));
+
+      if (!unansweredPolls.length && !requiredPolls.length) {
+        return (
+          <>
+            <br></br><br></br>
+            <p> You have no unanswered questions. Thank you! </p>
+          </>
+        )
+      }
+      else if (props.btnStatus === "answered" && requiredPolls.length) {
+        return <PollList requiredPolls={requiredPolls} status={props.btnStatus} />
+      }
+      else if (props.btnStatus === "unanswered" && requiredPolls.length) {
+        return <PollList requiredPolls={requiredPolls} status={props.btnStatus} /> 
+      }
+      else if (props.btnStatus === "recommended") {
+        if (unansweredPolls.length) {
+          return <PollList requiredPolls={requiredPolls} status={props.btnStatus} /> 
+        }
+        else {
+          return (
+            <>
+              <br></br><br></br>
+              <p> No Recommendation. Thank you! </p>
+            </>
+          )
+        }
+      }
+    }
+
+    return(
+      <>
+          {
+              cookies.get('authedUser') &&
+              <>           
+                <div className='main-container'>
+                  <div className="top-panel">
+                    <button onClick={handleRecBtnClick.bind(this)}
+                      className={`btn btn-success all ${allBtnClass}`}>
+                      Recommended
+                    </button>
+                    <button onClick={handleUnansBtnClick.bind(this)}
+                      className={`btn btn-danger unanswered ${unansBtnClass}`} >
+                      Unanswered
+                    </button>
+                    <button className={`btn btn-primary answered ${ansBtnClass}`}
+                      onClick={handleAnsBtnClicked.bind(this)} >
+                      Answered
+                    </button>
+                  </div>
+                  {
+                    props.pollStatus === "done" && props.userStatus === "done" && props.authUserStatus === "done" &&
+                      checkAvailability()
+                  }
+                  {
+                    props.pollStatus === "loading" && props.userStatus ==="loading" && props.authUserStatus !== "done" &&
+                      <>
+                        <br></br><br></br>
+                        <DotLoader color={"tomato"} loading={true} css={override} size={60} />
+                      </>
+                  }
+                  {
+                    props.pollStatus === "failed" && props.authUserStatus === "failed" &&
+                      <>
+                        <br></br><br></br>
+                        <p> No Internet Connection </p>
+                      </>
+                  }
+                </div>
+              </>
+              }
+            {
+              !cookies.get('authedUser') &&
+                <Redirect to={{
+                    pathname: '/users/login',
+                    state: {desc: "sign in required", redirected: true}
+              }}/>
+          }
+      </>
+    )
   
 }
 
 const mapStateToProps = state => {
   return {
-    users: state.users.data,
-    authedUser: state.users.autherUser,
-    poll: state.polls.data
+    users: state.users.payload.data,
+    userStatus: state.users.payload.status,
+    authedUser: state.users.authedUser.name,
+    authUserStatus: state.users.authedUser.status,
+    polls: state.polls.payload.data,
+    pollStatus: state.polls.payload.status,
+    btnStatus: state.polls.btnStatus
   }
 }
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    dispatch_fetchUsers: () => dispatch(fetchUsers()),
-    dispatch_authedUser: (user) => dispatch(authedUser(user)),
+    dispatch_getBtnStatus: (status) => dispatch(getBtnStatus(status)),
     dispatch_fetchPoll: () => dispatch(fetchPoll())
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Dashboard);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Dashboard));

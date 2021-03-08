@@ -1,28 +1,36 @@
-import React from 'react';
-import {NavLink, Link, Redirect} from 'react-router-dom';
+import React, {useEffect} from 'react';
+import {NavLink, Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import '../styles/App.css';
 import Cookies from 'universal-cookie';
 import {IoMdArrowDropdown} from 'react-icons/io';
+import {authedUser, fetchUsers} from '../redux/middlewares/mwUsers';
+import {fetchPoll} from '../redux/middlewares/mwPolls';
 
 const cookies = new Cookies();
 
 function Navigation(props){
 
-  const logout = (e) => {
-    if (cookies.get("authedUser")) {
-      cookies.remove("authedUser", {path: "/"})
+  /* eslint-disable */
+  useEffect(() => {
+    if(cookies.get("authedUser")) {
+      props.dispatch_authedUser(cookies.get("authedUser"));
     }
-    else {
-      return <Redirect to='/users/login' />
-    }
-    
-  }
+  }, [])
+
+  useEffect(() => {
+    props.dispatch_fetchUsers();
+  }, [])
+
+  useEffect(() => {
+    props.dispatch_fetchPoll();
+  }, [])
+  /* eslint-enable */
 
   const image = props.avatarURL;
 
-  const imageURL = image ? `usersAvatar/${image}` 
-  : 'usersAvatar/avatar.png';
+  const imageURL = image ? `/usersAvatar/${image}` 
+  : '/usersAvatar/avatar.png';
  
   return (
     <>
@@ -39,7 +47,7 @@ function Navigation(props){
                   <NavLink
                     className="nav-link"
                     activeClassName="active"
-                    exact to="/">
+                    exact to="/dashboard">
                     Dashboard
                   </NavLink>
                 </li>
@@ -47,8 +55,16 @@ function Navigation(props){
                   <NavLink
                     className="nav-link"
                     activeClassName="active"
-                    to="/new-poll">
+                    to="/add">
                     New Poll
+                  </NavLink>
+                </li>
+                <li className="nav-item">
+                  <NavLink
+                    className="nav-link"
+                    activeClassName="active"
+                    to="/leaderboard">
+                    Leaderboard
                   </NavLink>
                 </li>
 
@@ -61,12 +77,28 @@ function Navigation(props){
                     </p>
                     <div className="dropdown-menu" aria-labelledby="navbarDropdown">
                         <div className="dropdown-divider"></div>
+                            <Link className="dropdown-item"
+                              to={{
+                                pathname:'/users/login',
+                                state: {desc:'sign in'}  
+                                }}>
+                              Sign In
+                            </Link>
+                        <div className="dropdown-divider"></div>
                         <Link className="dropdown-item"
                           to={{
                             pathname:'/users/signup',
                             state: {desc:'sign up'}  
                             }}>
                           Sign Up
+                        </Link>
+                        <div className="dropdown-divider"></div>
+                        <Link className="dropdown-item"
+                          to={{
+                            pathname:'/users/logout',
+                            state: {desc:'sign out'}  
+                            }}>
+                          Sign Out
                         </Link>
                     </div>
                   </div>
@@ -77,25 +109,6 @@ function Navigation(props){
                       <img src={imageURL} alt="avatar" />
                     </li>
                 }
-                <li className="nav-item signin">
-                  <>
-                    <NavLink className="nav-link btn btn-primary text-white" activeClassName="active"
-                     to={{
-                      pathname:'/users/login',
-                      state: {desc:'sign in'}
-                    }}>
-                       Login</NavLink>
-                  </>       
-                </li>
-                <li className="nav-item signout">
-                    <NavLink className="nav-link btn btn-danger text-white" 
-                      to={{
-                      pathname:'/users/logout',
-                      state: {desc:'sign out', message: "Thank you for your time. Bye!"}  
-                      }} onClick={logout.bind(this)}>
-                        Logout
-                    </NavLink>
-                </li>
               </ul>
               <div>
               </div>
@@ -108,10 +121,18 @@ function Navigation(props){
 
 const mapStateToProps = state => {
   return {
-    authedUser: state.users.authedUser,
-    avatarURL: state.users.avatarURL,
-    users: state.users.data
+    authedUser: state.users.authedUser.name,
+    avatarURL: state.users.authedUser.url,
+    users: state.users.payload.data
   }
 }
 
-export default connect(mapStateToProps)(Navigation);
+const mapDispatchToProps = dispatch => {
+  return {
+    dispatch_authedUser: (user) => dispatch(authedUser(user)),
+    dispatch_fetchUsers: () => dispatch(fetchUsers()),
+    dispatch_fetchPoll: () => dispatch(fetchPoll())
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navigation);

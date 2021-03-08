@@ -1,18 +1,22 @@
 import * as actions from '../actions';
 
-export function loadUser(users) {
+export function loadUser(users, status) {
     return {
         type: actions.ADD_USER,
-        users
+        payload: {
+            users,
+            status
+        }
     }
 }
 
-export function getAuthedUser(user, avatar) {
+export function getAuthedUser(name, avatar, status) {
     return {
         type: actions.AUTHED_USER,
         payload: {
-            authedUser: user,
-            userAvatar: avatar
+            name,
+            avatar,
+            status
         }
     }
 }

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
 import { withRouter } from "react-router-dom";
 import '../styles/login.css';
@@ -6,7 +6,6 @@ import {encode} from 'base-64';
 import Cookies from 'universal-cookie';
 import {connect} from 'react-redux';
 import {authedUser} from '../redux/middlewares/mwUsers';
-import Navigation from './NavBar';
 import {login} from '../redux/middlewares/mwUsers';
 
 // instantiate cookie
@@ -16,17 +15,6 @@ const Login = (props) => {
     const [username, setUsername] = useState("Guest");
     const [password, setPassword] = useState("");
     const [remembered, setLoginCache] = useState(false);
-
-    /* eslint-disable */
-    useEffect(() => {
-        if(!cookies.get("authedUser")){
-            props.dispatch_authedUser(username);
-        }
-        else {
-            props.dispatch_authedUser(cookies.get("authedUser"));
-        }
-    }, [])
-    /* eslint-enable */
 
     // an event to handle username textbox changes
     const handleUsername = (e) => {
@@ -68,7 +56,7 @@ const Login = (props) => {
                 // Tell the user that login is successful
                 alert(res.message);
                 // push the route to the location hook to redirect
-                props.history.push('/');
+                props.history.push('/', true);
             }
             else if (parseInt(res.status) === 401) {
                 alert(res.message);
@@ -82,12 +70,11 @@ const Login = (props) => {
     // return a decription and a login form
     return (
         <>
-        <Navigation />
         <div className="container">
         <div className="d-flex justify-content-center h-100">
             <div className="card">
                 <div className="card-header">
-                    <h3>{props.location.state.desc}</h3>
+                    <h3>{props.location.state ? props.location.state.desc : "sign in"}</h3>
                 </div>
                 <div className="card-body">
                     <form onSubmit={handleSubmit.bind(this)} >

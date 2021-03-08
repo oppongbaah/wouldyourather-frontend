@@ -5,42 +5,56 @@ import axios from 'axios';
 const cookies = new Cookies();
 
 // const api = 'https://wouldyouratherapplication.herokuapp.com';
-const api = 'http://localhost:4000';
+const api = 'http://localhost:5000';
 
 export function fetchUsers() {
     return (dispatch => {
-        axios.get(`${api}/users/fetch-all`)
-        .then(users => {
-            dispatch(actionCreators.loadUser(users.data))
-        })
-        .catch(err => {
+        try {
+            dispatch(actionCreators.loadUser([], "loading"));
+    
+            axios.get(`${api}/users/fetch-all`)
+            .then(users => {
+                dispatch(actionCreators.loadUser(users.data, "done"));
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(actionCreators.loadUser([], "failed"));
+            })
+        }
+        catch (err){
             console.log(err);
-        })
+        }
     })
 }
 
 export function authedUser(user) {
-    if (user === "Guest") {
-        return (dispatch => {
-            dispatch(actionCreators.getAuthedUser(user, ''))
-        })
-    }
-    else {
-        return (dispatch => {
-            axios.get(`${api}/users/fetch/${user.trim()}`)
-            .then(authedUser => {
-                dispatch(actionCreators.getAuthedUser(user, authedUser.data.imageURL))
-            })
-            .catch(err => {
-                console.log(err);
-            })
-        })
-    }
+    return (dispatch => {
+        try {
+            dispatch(actionCreators.getAuthedUser("", "", "logging"));
+    
+            if (user === "Guest") {
+                dispatch(actionCreators.getAuthedUser(user, "", "done"));
+            }
+            else {
+                axios.get(`${api}/users/fetch/${user.trim()}`)
+                .then(authedUser => {
+                    dispatch(actionCreators.getAuthedUser(user, authedUser.data.imageURL, "done"))
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            }
+        }
+        catch (err){
+            console.log(err);
+            dispatch(actionCreators.getAuthedUser("", "", "failed"));
+        }
+    })
 }
 
 export async function login(credentials) {
     try {
-        return await fetch(`${api}/users/login/`, {
+        return await fetch(`${api}/users/login`, {
           method: 'POST',
           headers: {
             "Access-Control-Allow-Origin": api,
@@ -55,20 +69,23 @@ export async function login(credentials) {
 }
 
 export async function signup(credentials, history) {
-    return fetch(`${api}/users/signup`, {
-        method: 'POST',
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials)
-      })
-      .then(data => {
-        data.text().then(text => {
-            alert(text);
-            cookies.set("authedUser", credentials._id);
-            history.push("/");
-        })
-      })
-      .catch(err => console.log(err))
+    try {
+        return fetch(`${api}/users/signup`, {
+            method: 'POST',
+            headers: {
+                "Access-Control-Allow-Origin": "*",
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(credentials)
+            })
+            .then(data => {
+                data.text().then(text => {
+                    alert(text);
+                    cookies.set("authedUser", credentials._id);
+                    history.push("/");
+                })
+            })
+            .catch(err => console.log(err))
+    }
+    catch (e) {console.error(e)}
 }
