@@ -1,12 +1,9 @@
 import React, {useState} from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import { withRouter } from "react-router-dom";
 import '../styles/login.css';
 import '../styles/App.css';
-import Cookies from 'universal-cookie';
 import {signup} from '../redux/middlewares/mwUsers';
-
-const cookies = new Cookies();
 
 const Signup = (props) => {
 
@@ -93,7 +90,6 @@ const Signup = (props) => {
     return (
         <>
         {
-            cookies.get("authedUser") &&
             <>
                 <div className="container">
                     <div className="d-flex justify-content-center h-100">
@@ -145,13 +141,6 @@ const Signup = (props) => {
                     </div>
                 </div>
             </>
-        }
-        {
-            !cookies.get("authedUser") &&
-            <Redirect to={{
-                pathname: '/users/login',
-                state: {desc: "sign in required", redirected: true}
-            }} />
         }
         </>
     )

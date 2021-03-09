@@ -1,8 +1,7 @@
 import * as actionCreators from '../actionCreators/acPolls';
 import axios from 'axios';
 
-// const api = 'https://wouldyouratherapplication.herokuapp.com';
-const api = 'http://localhost:5000';
+const api = 'https://wouldyouratherapplication.herokuapp.com';
 
 export function fetchPoll() {
     return (dispatch => {

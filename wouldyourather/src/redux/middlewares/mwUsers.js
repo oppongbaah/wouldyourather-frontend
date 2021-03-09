@@ -4,8 +4,7 @@ import axios from 'axios';
 
 const cookies = new Cookies();
 
-// const api = 'https://wouldyouratherapplication.herokuapp.com';
-const api = 'http://localhost:5000';
+const api = 'https://wouldyouratherapplication.herokuapp.com';
 
 export function fetchUsers() {
     return (dispatch => {
