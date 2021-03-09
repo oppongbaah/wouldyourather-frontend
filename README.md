@@ -2,15 +2,16 @@
 - React front end for the Would You Rather Application
 
 ## Installation
-- Clone the app from the github repository using
-```
-[https://github.com/oppongbaah/wouldyourather-frontend.git](https://github.com/oppongbaah/wouldyourather-frontend.git)
-```
+- Clone the app from the github repository [wouldyourather-frontend](https://github.com/oppongbaah/wouldyourather-frontend.git)
 - Navigate to the root directory of the app and install deppendencies using
 ```
 npm intall
 ```
-- Run ```npm start``` to launch the development server. If server doesn't start automatically in the browser, type **http://localhost:3000** to access the site
+- Launch the development server using
+```
+npm start
+```
+- If server doesn't start automatically in the browser, click [here](http://localhost:3000) to access the site.
 
 ## Introduction
 - User can sign up
@@ -40,7 +41,7 @@ npm intall
 
 ### ADDITIONAL INFORMATION
 1. The application has a backend written in nodejs hosted at a remote server. The full stacked project can be accessed at [wouldyouratherapp](https://wouldyouratherapplication.herokuapp.com)
-2. The repository for the backend can be accessed at [backend_repo](https://github.com/oppongbaah/wouldyourather-backend.git)
+2. The repository for the backend can be accessed at [wouldyourather-backend](https://github.com/oppongbaah/wouldyourather-backend.git)
 2. User must login to access any page. Users login infomation can be accessed at [get_users](https://wouldyouratherapplication.herokuapp.com/users/fetch-all)
 3. Cookies are used for better user experience. Login session may last for an hour to expire.
 
