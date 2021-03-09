@@ -2,8 +2,12 @@
 - React front end for the Would You Rather Application
 
 ## Installation
-- Clone the app from the github repository [wouldyourather-frontend](https://github.com/oppongbaah/wouldyourather-frontend.git)
-- Navigate to the root directory of the app and install deppendencies using
+- Clone the app from the github repository using
+```
+https://github.com/oppongbaah/wouldyourather-frontend.git
+```
+
+- Navigate to the root directory of the app and install dependencies using
 ```
 npm intall
 ```
