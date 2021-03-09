@@ -9,7 +9,7 @@ https://github.com/oppongbaah/wouldyourather-frontend.git
 
 - Navigate to the root directory of the app and install dependencies using
 ```
-npm intall
+npm install
 ```
 - Launch the development server using
 ```
@@ -50,6 +50,8 @@ npm start
 3. Cookies are used for better user experience. Login session may last for an hour to expire.
 
 ### Lincensing
-- Both the freont end and back end repositories are open source. Therefore, any interested user can make collaborate on it if interested.
+- Both the front end and back end repositories are open source. Therefore, any interested developer can use it anyway that suits him/her.
+
+- Contact me on oppongbaahisaacmega@gmail.com
 
 
