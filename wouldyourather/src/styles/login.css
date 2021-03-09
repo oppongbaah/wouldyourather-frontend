@@ -14,7 +14,7 @@ align-content: center;
 }
 
 .card{
-height: 450px;
+height: 600px;
 margin: 1vmax auto;
 width: 400px;
 background-color: rgba(30, 30, 30, 0.8) !important;
@@ -83,4 +83,8 @@ color: tomato;
     margin-top: 100px;
     margin-left: 25%;
     color: red;
+}
+
+.username {
+    color: gold;
 }

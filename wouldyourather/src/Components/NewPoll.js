@@ -14,7 +14,8 @@ const NewTweet = (props) => {
   // declare all internal state variables here
   const [optOne, setOptOne] = useState("");
   const [optTwo, setOptTwo] = useState("");
-  const [formField, validateField] = useState("");
+  const [optOneField, validateOptOneField] = useState("");
+  const [optTwoField, validateOptTwoField] = useState("");
 
   const override = css`
   display: block;
@@ -52,24 +53,17 @@ const NewTweet = (props) => {
     }
 
     // call the middleware function and pass the form data to it
-    if(optOne !== "" || optTwo !== "") {
-      props.dispatch_question(formData);
-      validateField("valid");
-    }
-    else {
-      validateField("invalid");
-    }
-  }
-
-  const validateFields = () => {
     if(optOne === "") {
-      return <p> Please provide option one </p>
+      validateOptOneField("invalid");
     }
-    else if(optTwo === "") {
-      return <p> Please provide option two </p>
+    if(optTwo === "") {
+      validateOptTwoField("invalid");
     }
-    else {
-      return true;
+
+    if(optTwo !== "" && optTwo !== "") {
+      validateOptOneField("valid");
+      validateOptTwoField("valid");
+      props.dispatch_question(formData);
     }
   }
 
@@ -102,13 +96,13 @@ const NewTweet = (props) => {
           }
           {
             props.addingStatus === "added" &&
-              formField === "valid" 
+              optOneField === "valid" && optTwoField === "valid"
               ?
                 <h3 className="adding-message"> {props.addingMessage} </h3>
               :
-              formField === "invalid" &&
+              optOneField === "invalid" && optTwoField === "invalid" &&
                 <h3 className="warning-message"> 
-                Please provide a valid text form both option one and two</h3>
+                Please provide a valid text for both option one and two</h3>
           }
           {
             props.addingStatus === "failed" &&

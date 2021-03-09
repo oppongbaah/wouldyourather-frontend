@@ -15,9 +15,11 @@ const Signup = (props) => {
     const [password, setPassword] = useState("");
     const [comfirmPassword, setComfirmPassword] = useState("");
     const [file, setFileName] = useState("");
+    const [userId, setUsername] = useState("");
 
     const handleFirstname = (e) => {
         setFirstname(e.target.value);
+        setUsername(e.target.value.toLowerCase());
     }
 
     const handleLastname = (e) => {
@@ -45,10 +47,12 @@ const Signup = (props) => {
         else {
             if (getPassword().match && getUserId().validated) {
                 signup({
-                    _id: getUserId().id,
+                    _id: userId,
                     username: getUsername(),
                     imageURL: getImageURL(),
-                    password: getPassword().password
+                    password: getPassword().password,
+                    answers: [],
+                    questions: []
                 }, props.history);
             }
             else if (!getPassword().match) {
@@ -119,6 +123,7 @@ const Signup = (props) => {
                                         placeholder="comfirm password" 
                                         onChange={handleComfirmPassword.bind(this)} />
                                     </div>
+                                    <p className="username"> Username: {userId} </p>
                                     <div className="form-group">
                                         <input type="submit" value="Sign Up"
                                         className= "btn float-right login_btn" />
