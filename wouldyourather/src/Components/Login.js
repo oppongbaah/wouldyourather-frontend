@@ -5,8 +5,8 @@ import '../styles/login.css';
 import {encode} from 'base-64';
 import Cookies from 'universal-cookie';
 import {connect} from 'react-redux';
-import {authedUser} from '../redux/middlewares/mwUsers';
-import {login} from '../redux/middlewares/mwUsers';
+import {login, authedUser} from '../redux/middlewares/mwUsers';
+import axios from 'axios';
 
 // instantiate cookie
 const cookies = new Cookies();
@@ -35,6 +35,22 @@ const Login = (props) => {
         }
     }
 
+    const directURL = (url) => {
+        const qid = url.split("/")[2];
+        const api = "https://wouldyouratherapplication.herokuapp.com";
+
+        if (qid) {
+            axios.get(`${api}/polls/fetch/${qid.trim()}`)
+            .then((poll) => {
+                props.history.push(url, {
+                    question: poll.data,
+                    users: props.users
+                });
+            })
+            .catch(props.history.push('/page-not-found-return-home', true))
+        }
+    }
+
     // this finally handles the event that submits data to the server for approval
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -49,14 +65,33 @@ const Login = (props) => {
                     let time = new Date();
                     // cookies expires in hour time
                     time.setTime(time.getTime() + (60*60*1000));
-                    cookies.set('authedUser', res.name, { path: '/', expires: time});
+                    cookies.set('authedUser', res.name, { path: '/'});
                 }
                 // add the authed user to the store state
                 props.dispatch_authedUser(res.name);
                 // Tell the user that login is successful
                 alert(res.message);
                 // push the route to the location hook to redirect
-                props.history.push('/', true);
+                const previousPath = props.history.location.state.prevPath;
+                const questionPath = props.history.location.state.questionPath;
+                const directPath = props.history.location.state.directPath
+
+                if(props.history.action === "REPLACE" && previousPath) {
+                    // when refreshed
+                    props.history.push(previousPath, true);
+                }
+                else if(props.history.action === "REPLACE" && questionPath) {
+                    console.log(questionPath)
+                    // when already logged in before
+                    directURL(questionPath);
+                }
+                else if(props.history.action === "REPLACE" && directPath) {
+                    // when logged out before
+                    directURL(directPath);
+                }
+                else {
+                    props.history.push('/', true);
+                }
             }
             else if (parseInt(res.status) === 401) {
                 alert(res.message);
@@ -66,7 +101,6 @@ const Login = (props) => {
             console.log(err)
         })
     }
-
     // return a decription and a login form
     return (
         <>
@@ -111,6 +145,12 @@ const Login = (props) => {
         </>
     )
 }
+
+const mapStateToProps = state => {
+    return {
+        users: state.users.payload.data
+    }
+}
   
 const mapDispatchToProps = dispatch => {
     return {
@@ -118,4 +158,4 @@ const mapDispatchToProps = dispatch => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(withRouter(Login));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Login));

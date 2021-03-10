@@ -23,24 +23,13 @@ const QuestionDetails = (props) => {
   const [tagA, setTagA] = useState("A");
   const [tagB, setTagB] = useState("B");
 
+  let question = null, users = null; 
+
   try {
-
-    const question = props.history.location.state.question;
-
-    const users = props.users.length
-    ? props.users
-    : props.history.location.state.users;
-
-    const {
-        author,
-        optionOne,
-        optionTwo
-    } = question;
-    
-    let image = getImageURL(users, author);
-    image = image[0] ? image : 'avatar.png';
-
     const handleOptAClick = (option) => {
+      users = props.history.location.users
+      question = props.history.location.state.question
+
       props.dispatch_vote(question._id, props.authedUser, option);
 
       setBtnAClass("selected");
@@ -51,7 +40,6 @@ const QuestionDetails = (props) => {
         question,
         users
       });
-
     }
 
     props.history.listen((location, action) => {
@@ -62,6 +50,9 @@ const QuestionDetails = (props) => {
     
     const handleOptBClick = async (option) => {
       try {
+        users = props.history.location.state.users
+        question = props.history.location.state.question
+
         await props.dispatch_vote(question._id, props.authedUser, option);
   
         setBtnBClass("selected");
@@ -70,13 +61,59 @@ const QuestionDetails = (props) => {
         
         props.history.push(`/questions/${question._id}/answered`, {
           question,
-          users
+          users,
+          prevPath: props.history.location.pathname
         });
       }
       catch (err) {console.log(err);}
     }
 
+    const returnRedirect = () => {
+
+      return (
+        <Redirect to={{
+          pathname: '/users/login',
+          state: {desc: "sign in required", redirected: true, 
+            questionPath: props.history.location.pathname}
+        }} />
+      )
+    }
+
+    const viewQuestion = (optionOne,optionTwo) => {
+
+      return (
+        <div className="question">
+          <h2> Would You Rather? </h2>
+          <div className="option-btn">
+              <div> <p> {tagA} </p> </div>
+              <button className={`btn btn-primary active ${btnAClass}`} 
+                disabled={btnFlag}
+                onClick={handleOptAClick.bind(this, "optionOne")} >
+                {optionOne.text}
+              </button>
+          </div>
+          <div className="option-btn">
+              <div> <p> {tagB} </p> </div>
+              <button className={`btn btn-primary active ${btnBClass}`}
+                disabled={btnFlag}
+                onClick={handleOptBClick.bind(this, "optionTwo")} >
+                {optionTwo.text}
+              </button>
+          </div>
+        </div>
+      )
+    }
+
     const view = () => {
+      users = props.history.location.state.users
+      question = props.history.location.state.question
+
+      const {author,optionOne,optionTwo} = question;
+
+      let image = getImageURL(users, author);
+      image = image[0] ? image : 'avatar.png';
+
+
       return (
         <>
         <div className="poll">
@@ -87,25 +124,7 @@ const QuestionDetails = (props) => {
                 <div className="asked-by">
                     <span> asked by @{getUserId(props.users, author)} </span>
                 </div>
-                <div className="question">
-                    <h2> Would You Rather? </h2>
-                    <div className="option-btn">
-                        <div> <p> {tagA} </p> </div>
-                        <button className={`btn btn-primary active ${btnAClass}`} 
-                          disabled={btnFlag}
-                          onClick={handleOptAClick.bind(this, "optionOne")} >
-                          {optionOne.text}
-                        </button>
-                    </div>
-                    <div className="option-btn">
-                        <div> <p> {tagB} </p> </div>
-                        <button className={`btn btn-primary active ${btnBClass}`}
-                          disabled={btnFlag}
-                          onClick={handleOptBClick.bind(this, "optionTwo")} >
-                          {optionTwo.text}
-                        </button>
-                    </div>
-                </div>
+                {viewQuestion(optionOne,optionTwo)}
             </div>
         </div>
         </>
@@ -115,15 +134,22 @@ const QuestionDetails = (props) => {
     return(
       <>
         {
-            cookies.get("authedUser") &&
+          cookies.get("authedUser") &&
+            props.history.action === "PUSH" && props.history.location.state ?
               view()
+            :
+            props.history.action === "POP" && props.history.location.state ?
+              view()
+            :
+              returnRedirect()
         }
         {
-            !cookies.get("authedUser") &&
-                <Redirect to={{
-                    pathname: '/users/login',
-                    state: {desc: "sign in required", redirected: true}
-                }} />
+          !cookies.get("authedUser") &&
+              <Redirect to={{
+                  pathname: '/users/login',
+                  state: {desc: "sign in required", redirected: true,
+                  directPath: props.history.location.pathname}
+              }} />
         }
       </>
     )

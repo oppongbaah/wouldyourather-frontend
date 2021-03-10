@@ -55,7 +55,10 @@ function Navigation(props){
                   <NavLink
                     className="nav-link"
                     activeClassName="active"
-                    to="/add">
+                    to={{
+                      pathname: "/add",
+                      state: "authorised"
+                    }}>
                     New Poll
                   </NavLink>
                 </li>
@@ -63,7 +66,10 @@ function Navigation(props){
                   <NavLink
                     className="nav-link"
                     activeClassName="active"
-                    to="/leaderboard">
+                    to={{
+                      pathname: "/leaderboard",
+                      state: "authorised"
+                    }}>
                     Leaderboard
                   </NavLink>
                 </li>

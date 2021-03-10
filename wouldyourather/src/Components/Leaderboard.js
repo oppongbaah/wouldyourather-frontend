@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
-import {Redirect} from 'react-router-dom';
+import {Redirect, withRouter} from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import {fetchUsers} from '../redux/middlewares/mwUsers';
 import { css } from "@emotion/react";
@@ -31,31 +31,47 @@ const Leaderboard = (props) => {
         (y.questions.length + y.answers.length) ? 
         1 : -1);
     return sortedPolls;
-  } 
-  
+  }  
+
+  const preview = () => {
+    return (
+      sortUsers(users).map(user => (
+        <li key={user._id}>
+          <div className="poll">
+            <h4> {sortUsers(users).indexOf(user)+1} </h4>
+            <div className="avatar">
+              <img src={`/usersAvatar/${user.imageURL?user.imageURL:'avatar.png'}`}
+              alt="profile" />
+            </div>
+            <div className="poll-info">
+              <div>
+                <span> {user.username} </span>
+              </div>
+              <p> {`${user.questions.length} questions asked`} </p>
+              <p> {`${user.answers.length} questions answered`} </p>
+            </div>
+          </div>
+        </li>
+      ))
+    )
+  }
+
   const view = () => {
-    
+
     return (
       <ol>
         {
-          sortUsers(users).map(user => (
-            <li key={user._id}>
-              <div className="poll">
-                <h4> {sortUsers(users).indexOf(user)+1} </h4>
-                <div className="avatar">
-                  <img src={`/usersAvatar/${user.imageURL?user.imageURL:'avatar.png'}`}
-                   alt="profile" />
-                </div>
-                <div className="poll-info">
-                  <div>
-                    <span> {user.username} </span>
-                  </div>
-                  <p> {`${user.questions.length} questions asked`} </p>
-                  <p> {`${user.answers.length} questions answered`} </p>
-                </div>
-              </div>
-            </li>
-          ))
+            props.history.action === "PUSH" && props.history.location.state ?
+              preview()
+            :
+            props.history.action === "POP" && props.history.location.state ?
+              preview()
+            :
+            <Redirect to={{
+              pathname: '/users/login',
+              state: {desc: "sign in required", redirected: true, 
+              prevPath: props.history.location.pathname}
+            }} />
         }
       </ol>
     )
@@ -75,7 +91,8 @@ const Leaderboard = (props) => {
         !cookies.get("authedUser") &&
           <Redirect to={{
             pathname: '/users/login',
-            state: {desc: "sign in required", redirected: true}
+            state: {desc: "sign in required", redirected: true, 
+            prevState: props.history.location.pathname}
           }} />
       }
     </>
@@ -95,4 +112,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 } 
 
-export default connect(mapStateToProps, mapDispatchToProps)(Leaderboard);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(Leaderboard));

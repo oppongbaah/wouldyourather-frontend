@@ -28,8 +28,9 @@ export function fetchPoll() {
 
 export function getQuestion(qid) {
     try {
-        axios.get(`${api}/polls/fetch/${qid}`)
+        axios.get(`${api}/polls/fetch/${qid.trim()}`)
         .then((poll) => {
+            console.log(poll.data)
             return poll.data;
         })
         .catch((err) => console.log(err))

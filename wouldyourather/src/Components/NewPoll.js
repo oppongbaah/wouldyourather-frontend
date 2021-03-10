@@ -67,54 +67,79 @@ const NewTweet = (props) => {
     }
   }
 
+  const formView = () => {
+    return (
+      <form onSubmit={handleSubmit.bind(this)}>
+        <div className="form-group">
+          <label >Option One</label>
+          <textarea className="form-control" rows="3"
+          placeholder="type here" onChange={handleOptionOneText.bind(this)} >
+          </textarea>
+        </div>
+        <div className="form-group">
+          <label >Option Two</label>
+          <textarea className="form-control" rows="3"
+            placeholder="type here" onChange={handleOptionTwoText.bind(this)}>
+          </textarea>
+        </div>
+        <div className="form-group">
+          <input className="btn btn-success active add" type="submit" value="Submit" />
+        </div>
+      </form>
+    )
+  }
+
+  const view = () => {
+
+    return (
+      <>
+        <h1 className="center"> Would You Rather? </h1>
+        {formView()}
+        {
+          props.addingStatus === "adding" ?
+            <DotLoader color={"tomato"} loading={true} css={override} size={60} />
+          :
+          props.addingStatus === "added" ?
+            optOneField === "valid" && optTwoField === "valid"
+            ?
+              <h3 className="adding-message"> {props.addingMessage} </h3>
+            :
+            optOneField === "invalid" && optTwoField === "invalid" &&
+              <h3 className="warning-message"> 
+              Please provide a valid text for both option one and two</h3>
+          :
+          props.addingStatus === "failed" ?
+            <h3 className="error-message"> {props.addingMessage} </h3>
+          :
+          <h3 className="warning-message"> 
+          * Both fields are required</h3>
+        }
+      </>
+    )
+  }
+
   return(
     <>
       {
         cookies.get("authedUser") &&
-        <>
-          <h1 className="center"> Would You Rather? </h1>
-          <form onSubmit={handleSubmit.bind(this)}>
-            <div className="form-group">
-              <label >Option One</label>
-              <textarea className="form-control" rows="3"
-              placeholder="type here" onChange={handleOptionOneText.bind(this)} >
-              </textarea>
-            </div>
-            <div className="form-group">
-              <label >Option Two</label>
-              <textarea className="form-control" rows="3"
-                placeholder="type here" onChange={handleOptionTwoText.bind(this)}>
-              </textarea>
-            </div>
-            <div className="form-group">
-              <input className="btn btn-success active add" type="submit" value="Submit" />
-            </div>
-          </form>
-          {
-            props.addingStatus === "adding" &&
-              <DotLoader color={"tomato"} loading={true} css={override} size={60} />
-          }
-          {
-            props.addingStatus === "added" &&
-              optOneField === "valid" && optTwoField === "valid"
-              ?
-                <h3 className="adding-message"> {props.addingMessage} </h3>
-              :
-              optOneField === "invalid" && optTwoField === "invalid" &&
-                <h3 className="warning-message"> 
-                Please provide a valid text for both option one and two</h3>
-          }
-          {
-            props.addingStatus === "failed" &&
-              <h3 className="error-message"> {props.addingMessage} </h3>
-          }
-        </>
+          props.history.action === "PUSH" && props.history.location.state ?
+            view()
+          :
+          props.history.action === "POP" && props.history.location.state ?
+            view()
+          :
+          <Redirect to={{
+            pathname: '/users/login',
+            state: {desc: "sign in required", redirected: true, 
+            prevPath: props.history.location.pathname}
+          }} />
       }
       {
         !cookies.get("authedUser") &&
         <Redirect to={{
           pathname: '/users/login',
-          state: {desc: "sign in required", redirected: true}
+          state: {desc: "sign in required", redirected: true, 
+          prevState: props.history.location.pathname}
         }} />
       }
     </>

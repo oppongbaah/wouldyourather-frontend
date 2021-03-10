@@ -14,7 +14,7 @@ function Dashboard(props) {
 
     /* eslint-disable */
     useEffect(() => {
-      props.dispatch_fetchPoll();
+      // props.dispatch_fetchPoll();
       props.dispatch_getBtnStatus("recommended");
       handleRecBtnDispatch();
     }, [])
@@ -195,7 +195,8 @@ function Dashboard(props) {
               !cookies.get('authedUser') &&
                 <Redirect to={{
                     pathname: '/users/login',
-                    state: {desc: "sign in required", redirected: true}
+                    state: {desc: "sign in required", redirected: true,
+                    prevState: props.history.location.pathname}
               }}/>
           }
       </>

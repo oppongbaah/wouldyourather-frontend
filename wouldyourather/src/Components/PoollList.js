@@ -9,7 +9,8 @@ function PollList(props) {
   const handleViewBtnClick = (question) => {
     props.history.push(`/questions/${question._id}/${props.status}`, {
       question,
-      users:props.users
+      users: props.users,
+      prevPath: props.history.location.pathname
     });
   }
 
