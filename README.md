@@ -19,20 +19,20 @@ npm start
 
 ## Introduction
 - User can sign up
-![result](wouldyourather/src/utils/signup.png "Sign Up")
+![result](src/utils/signup.png "Sign Up")
 - Sign in and logout
-![signin](wouldyourather/src/utils/signin.png "Sign In")
+![signin](src/utils/signin.png "Sign In")
 - A user has the ability to navigate between three catalogs. The dashboard, New Poll and the Leaderboard as shown below. The dashboard has has three diffrent categories. The first category contains a recommended question that is randomly selected from the unanswered questions based on the user logged in. 
 - Dashboard
-![dashboard](wouldyourather/src/utils/dashboard.png "Dashboard")
+![dashboard](src/utils/dashboard.png "Dashboard")
 - New Poll
-![add-poll](wouldyourather/src/utils/addPoll.png "Add Poll")
+![add-poll](src/utils/addPoll.png "Add Poll")
 - Leaderboard
-![leaderboard](wouldyourather/src/utils/leaderboard.png "Leaderboard")
+![leaderboard](src/utils/leaderboard.png "Leaderboard")
 - A user is automatically navigated to the question details page upon viewing a question either from the recommended dashboard or from the unanswered questions dashboard. The questions detail page is shown below.
-![question-page](wouldyourather/src/utils/qdp.png "Question Detail Page")
+![question-page](src/utils/qdp.png "Question Detail Page")
 - On the question detail page, the user has the ability to cast a vote between two different options. Voting is done automatically after an option is selected. The user will then be taken to the results page as shown below.
-![result](wouldyourather/src/utils/result.png "Result Page")
+![result](src/utils/result.png "Result Page")
 
 - **NB: Also upon clicking on an poll under the answered dashboard, the user is navigated to the results page as compared to the ones described above under the other dashboard categories.**
 
